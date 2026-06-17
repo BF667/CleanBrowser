@@ -66,13 +66,13 @@ class SettingsActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("cleanbrowser", MODE_PRIVATE)
         val isGuest = prefs.getBoolean("is_guest", false)
         if (isGuest) return "guest"
-        return FirebaseAuth.getInstance().currentUser?.uid ?: "guest"
+        return try { FirebaseAuth.getInstance().currentUser?.uid ?: "guest" } catch (_: Exception) { "guest" }
     }
 
     private fun loadUserInfo() {
         val prefs = getSharedPreferences("cleanbrowser", MODE_PRIVATE)
         val isGuest = prefs.getBoolean("is_guest", false)
-        val user = FirebaseAuth.getInstance().currentUser
+        val user = try { FirebaseAuth.getInstance().currentUser } catch (_: Exception) { null }
 
         if (!isGuest && user != null) {
             textUserName.text = user.displayName ?: "User"
@@ -120,7 +120,7 @@ class SettingsActivity : AppCompatActivity() {
             .setTitle("Log out?")
             .setMessage("Your bookmarks and history will be kept locally.")
             .setPositiveButton("Log out") { _, _ ->
-                FirebaseAuth.getInstance().signOut()
+                try { FirebaseAuth.getInstance().signOut() } catch (_: Exception) {}
                 getSharedPreferences("cleanbrowser", MODE_PRIVATE)
                     .edit().remove("is_guest").apply()
                 startActivity(Intent(this, LoginActivity::class.java))

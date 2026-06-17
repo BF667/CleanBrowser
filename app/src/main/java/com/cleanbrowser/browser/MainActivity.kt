@@ -97,10 +97,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Check login via Firebase
+        // Check login — Firebase may not be configured, handle safely
         val prefs = getSharedPreferences("cleanbrowser", Context.MODE_PRIVATE)
         val isGuest = prefs.getBoolean("is_guest", false)
-        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        val firebaseUser = try { FirebaseAuth.getInstance().currentUser } catch (_: Exception) { null }
 
         if (!isGuest && firebaseUser == null) {
             startActivity(Intent(this, LoginActivity::class.java))
