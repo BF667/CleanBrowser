@@ -4,13 +4,15 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import java.security.MessageDigest
 
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "cleanbrowser.db", null, 2) {
+class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "cleanbrowser.db", null, 3) {
 
     companion object {
         const val TABLE_BOOKMARKS = "bookmarks"
         const val TABLE_HISTORY = "history"
         const val TABLE_TAB_FOLDERS = "tab_folders"
+        const val TABLE_USERS = "users"
 
         const val COL_ID = "id"
         const val COL_USER_ID = "user_id"
@@ -19,9 +21,24 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "cleanbrowser
         const val COL_TIMESTAMP = "timestamp"
         const val COL_FOLDER_NAME = "folder_name"
         const val COL_FOLDER_COLOR = "folder_color"
+        const val COL_EMAIL = "email"
+        const val COL_PASSWORD_HASH = "password_hash"
+        const val COL_DISPLAY_NAME = "display_name"
+        const val COL_AUTH_TYPE = "auth_type"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
+        db.execSQL("""
+            CREATE TABLE $TABLE_USERS (
+                $COL_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COL_EMAIL TEXT UNIQUE NOT NULL,
+                $COL_PASSWORD_HASH TEXT NOT NULL DEFAULT '',
+                $COL_DISPLAY_NAME TEXT NOT NULL DEFAULT '',
+                $COL_AUTH_TYPE TEXT NOT NULL DEFAULT 'email',
+                $COL_TIMESTAMP INTEGER NOT NULL
+            )
+        """.trimIndent())
+
         db.execSQL("""
             CREATE TABLE $TABLE_BOOKMARKS (
                 $COL_ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,10 +71,69 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "cleanbrowser
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_HISTORY")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_BOOKMARKS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_TAB_FOLDERS")
         onCreate(db)
+    }
+
+    // ── Users (local auth) ────────────────────────────────────────────────
+
+    fun createUser(email: String, password: String, displayName: String): Long {
+        val hash = sha256(password)
+        val values = ContentValues().apply {
+            put(COL_EMAIL, email.lowercase())
+            put(COL_PASSWORD_HASH, hash)
+            put(COL_DISPLAY_NAME, displayName)
+            put(COL_AUTH_TYPE, "email")
+            put(COL_TIMESTAMP, System.currentTimeMillis())
+        }
+        return writableDatabase.insertWithOnConflict(TABLE_USERS, null, values, SQLiteDatabase.CONFLICT_REPLACE)
+    }
+
+    fun createGoogleUser(email: String, displayName: String): Long {
+        val values = ContentValues().apply {
+            put(COL_EMAIL, email.lowercase())
+            put(COL_PASSWORD_HASH, "")
+            put(COL_DISPLAY_NAME, displayName)
+            put(COL_AUTH_TYPE, "google")
+            put(COL_TIMESTAMP, System.currentTimeMillis())
+        }
+        return writableDatabase.insertWithOnConflict(TABLE_USERS, null, values, SQLiteDatabase.CONFLICT_REPLACE)
+    }
+
+    fun authenticateUser(email: String, password: String): Pair<Boolean, String> {
+        val hash = sha256(password)
+        val cursor = readableDatabase.query(
+            TABLE_USERS, arrayOf(COL_DISPLAY_NAME),
+            "$COL_EMAIL = ? AND $COL_PASSWORD_HASH = ?",
+            arrayOf(email.lowercase(), hash), null, null, null
+        )
+        val exists = cursor.moveToFirst()
+        val name = if (exists) cursor.getString(0) else ""
+        cursor.close()
+        return Pair(exists, name)
+    }
+
+    fun getUserDisplayName(email: String): String {
+        val cursor = readableDatabase.query(
+            TABLE_USERS, arrayOf(COL_DISPLAY_NAME),
+            "$COL_EMAIL = ?", arrayOf(email.lowercase()),
+            null, null, null
+        )
+        val name = if (cursor.moveToFirst()) cursor.getString(0) else ""
+        cursor.close()
+        return name
+    }
+
+    fun deleteUser(email: String) {
+        writableDatabase.delete(TABLE_USERS, "$COL_EMAIL = ?", arrayOf(email.lowercase()))
+    }
+
+    private fun sha256(input: String): String {
+        val bytes = MessageDigest.getInstance("SHA-256").digest(input.toByteArray())
+        return bytes.joinToString("") { "%02x".format(it) }
     }
 
     // ── Bookmarks ──────────────────────────────────────────────────────────

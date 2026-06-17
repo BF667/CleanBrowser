@@ -12,7 +12,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.cleanbrowser.browser.data.DatabaseHelper
-import com.google.firebase.auth.FirebaseAuth
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -64,19 +65,18 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun getUserId(): String {
         val prefs = getSharedPreferences("cleanbrowser", MODE_PRIVATE)
-        val isGuest = prefs.getBoolean("is_guest", false)
-        if (isGuest) return "guest"
-        return try { FirebaseAuth.getInstance().currentUser?.uid ?: "guest" } catch (_: Exception) { "guest" }
+        if (prefs.getBoolean("is_guest", true)) return "guest"
+        return prefs.getString("user_email", "guest") ?: "guest"
     }
 
     private fun loadUserInfo() {
         val prefs = getSharedPreferences("cleanbrowser", MODE_PRIVATE)
-        val isGuest = prefs.getBoolean("is_guest", false)
-        val user = try { FirebaseAuth.getInstance().currentUser } catch (_: Exception) { null }
+        val isGuest = prefs.getBoolean("is_guest", true)
+        val isLoggedIn = prefs.getBoolean("is_logged_in", false)
 
-        if (!isGuest && user != null) {
-            textUserName.text = user.displayName ?: "User"
-            textUserEmail.text = user.email ?: ""
+        if (!isGuest && isLoggedIn) {
+            textUserName.text = prefs.getString("user_name", "User") ?: "User"
+            textUserEmail.text = prefs.getString("user_email", "") ?: ""
             btnLogout.visibility = View.VISIBLE
         } else {
             textUserName.text = "Guest"
@@ -120,9 +120,18 @@ class SettingsActivity : AppCompatActivity() {
             .setTitle("Log out?")
             .setMessage("Your bookmarks and history will be kept locally.")
             .setPositiveButton("Log out") { _, _ ->
-                try { FirebaseAuth.getInstance().signOut() } catch (_: Exception) {}
-                getSharedPreferences("cleanbrowser", MODE_PRIVATE)
-                    .edit().remove("is_guest").apply()
+                // Sign out of Google
+                try {
+                    GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut()
+                } catch (_: Exception) {}
+
+                getSharedPreferences("cleanbrowser", MODE_PRIVATE).edit().apply {
+                    remove("is_logged_in")
+                    remove("is_guest")
+                    remove("user_email")
+                    remove("user_name")
+                    apply()
+                }
                 startActivity(Intent(this, LoginActivity::class.java))
                 finishAffinity()
             }

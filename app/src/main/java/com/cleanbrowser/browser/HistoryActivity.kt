@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cleanbrowser.browser.data.DatabaseHelper
-import com.google.firebase.auth.FirebaseAuth
 
 class HistoryVH(view: View) : RecyclerView.ViewHolder(view) {
     val title: TextView = view.findViewById(R.id.item_title)
@@ -28,7 +27,7 @@ class HistoryActivity : AppCompatActivity() {
 
         val prefs = getSharedPreferences("cleanbrowser", MODE_PRIVATE)
         val isGuest = prefs.getBoolean("is_guest", false)
-        val uid = if (isGuest) "guest" else (FirebaseAuth.getInstance().currentUser?.uid ?: "guest")
+        val uid = if (isGuest) "guest" else (prefs.getString("user_email", "guest") ?: "guest")
         val recycler = findViewById<RecyclerView>(R.id.recycler_history)
         val emptyText = findViewById<TextView>(R.id.text_empty)
 

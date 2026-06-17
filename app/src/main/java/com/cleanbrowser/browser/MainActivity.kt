@@ -28,7 +28,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cleanbrowser.browser.data.DatabaseHelper
 import com.cleanbrowser.browser.ui.TabAdapter
-import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
@@ -97,18 +96,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Check login — Firebase may not be configured, handle safely
+        // Check login state from local prefs (no Firebase)
         val prefs = getSharedPreferences("cleanbrowser", Context.MODE_PRIVATE)
-        val isGuest = prefs.getBoolean("is_guest", false)
-        val firebaseUser = try { FirebaseAuth.getInstance().currentUser } catch (_: Exception) { null }
+        val isGuest = prefs.getBoolean("is_guest", true)
+        val isLoggedIn = prefs.getBoolean("is_logged_in", false)
 
-        if (!isGuest && firebaseUser == null) {
+        if (!isGuest && !isLoggedIn) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
         }
 
-        userId = if (isGuest) "guest" else (firebaseUser?.uid ?: "guest")
+        userId = if (isGuest) "guest" else (prefs.getString("user_email", "guest") ?: "guest")
 
         db = DatabaseHelper(this)
 

@@ -11,11 +11,3 @@
 # Keep Kotlin metadata
 -dontwarn kotlin.**
 -keep class kotlin.Metadata { *; }
-
-# Firebase
--keepattributes Signature
--keepattributes Exceptions
--keepattributes InnerClasses
--dontwarn com.google.firebase.**
--keep class com.google.firebase.** { *; }
--keepclassmembers class com.google.firebase.** { *; }

@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cleanbrowser.browser.data.DatabaseHelper
-import com.google.firebase.auth.FirebaseAuth
 
 class BookmarksActivity : AppCompatActivity() {
 
@@ -22,7 +21,7 @@ class BookmarksActivity : AppCompatActivity() {
 
         val prefs = getSharedPreferences("cleanbrowser", MODE_PRIVATE)
         val isGuest = prefs.getBoolean("is_guest", false)
-        val uid = if (isGuest) "guest" else (FirebaseAuth.getInstance().currentUser?.uid ?: "guest")
+        val uid = if (isGuest) "guest" else (prefs.getString("user_email", "guest") ?: "guest")
         val recycler = findViewById<RecyclerView>(R.id.recycler_bookmarks)
         val emptyText = findViewById<TextView>(R.id.text_empty)
 
