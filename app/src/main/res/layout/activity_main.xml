@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark">
+
+    <!-- WebView container -->
+    <FrameLayout
+        android:id="@+id/webview_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp" />
+
+    <!-- Top toolbar -->
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/toolbar_bg"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:elevation="4dp">
+
+        <ImageButton
+            android:id="@+id/btn_menu"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Menu"
+            android:src="@drawable/ic_menu"
+            android:tint="@color/icon_tint" />
+
+        <FrameLayout
+            android:id="@+id/url_bar_container"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/url_bar_bg">
+
+            <ImageView
+                android:id="@+id/ssl_icon"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/ic_lock"
+                android:tint="@color/ssl_secure"
+                android:visibility="gone"
+                android:contentDescription="SSL" />
+
+            <EditText
+                android:id="@+id/url_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="8dp"
+                android:background="@null"
+                android:hint="@string/url_hint"
+                android:textColorHint="@color/url_text_hint"
+                android:textColor="@color/url_text"
+                android:textSize="14sp"
+                android:singleLine="true"
+                android:imeOptions="actionGo|flagNoExtractUi"
+                android:inputType="textUri"
+                android:selectAllOnFocus="true"
+                android:fontFamily="sans-serif-medium"
+                android:padding="0dp" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/btn_tabs"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Tabs">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_layers"
+                android:tint="@color/icon_tint" />
+
+            <TextView
+                android:id="@+id/tab_count"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="end|top"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="2dp"
+                android:background="@color/tab_active"
+                android:gravity="center"
+                android:textColor="#FFFFFF"
+                android:textSize="9sp"
+                android:fontFamily="sans-serif-medium"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- Loading progress bar -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginTop="53dp"
+        android:progressDrawable="@drawable/progress_drawable"
+        android:max="100"
+        android:progress="0"
+        android:visibility="gone" />
+
+    <!-- Tab switcher overlay (Chrome-style grid) -->
+    <LinearLayout
+        android:id="@+id/tab_switcher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/tab_sheet_bg"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- Header bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#0D0D1A"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="16dp">
+
+            <!-- Close tab switcher -->
+            <ImageView
+                android:id="@+id/btn_close_tabs"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="6dp"
+                android:src="@drawable/ic_close"
+                android:tint="#FFFFFF"
+                android:contentDescription="Done" />
+
+            <!-- Tab count label -->
+            <TextView
+                android:id="@+id/tab_count_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:text="1 tab"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-medium" />
+
+            <!-- New tab group -->
+            <ImageView
+                android:id="@+id/btn_create_folder"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="6dp"
+                android:src="@drawable/ic_folder"
+                android:tint="#FFFFFF"
+                android:contentDescription="New group" />
+
+        </LinearLayout>
+
+        <!-- Tab grid (2 columns like Chrome) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tab_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:clipToPadding="false" />
+
+        <!-- Empty state -->
+        <LinearLayout
+            android:id="@+id/empty_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_layers"
+                android:tint="#3A3A4E" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/no_tabs"
+                android:textColor="#6B7280"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <!-- Footer bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="#0D0D1A"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <!-- New Tab button -->
+            <TextView
+                android:id="@+id/btn_new_tab"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/new_tab_pill"
+                android:gravity="center"
+                android:text="+ New tab"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <!-- Close all button -->
+            <TextView
+                android:id="@+id/btn_close_all"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:background="@drawable/close_all_pill"
+                android:gravity="center"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="Close all"
+                android:textColor="#9CA3AF"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif-medium"
+                android:clickable="true"
+                android:focusable="true" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

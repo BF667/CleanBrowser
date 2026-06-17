@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chrome-style tab group header: colored strip with group name, spans full width -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/group_header_root"
+    android:layout_width="match_parent"
+    android:layout_height="44dp"
+    android:layout_marginStart="6dp"
+    android:layout_marginEnd="6dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginBottom="2dp"
+    android:background="@drawable/tab_group_header_bg"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="14dp"
+    android:paddingEnd="8dp"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- Colored circle indicator -->
+    <View
+        android:id="@+id/group_color_dot"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:background="#4285F4" />
+
+    <!-- Group name -->
+    <TextView
+        android:id="@+id/group_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="10dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Group"
+        android:textColor="#E5E7EB"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-medium" />
+
+    <!-- Tab count -->
+    <TextView
+        android:id="@+id/group_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="2"
+        android:textColor="#9CA3AF"
+        android:textSize="13sp"
+        android:fontFamily="sans-serif" />
+
+    <!-- Close all in group -->
+    <ImageView
+        android:id="@+id/group_close"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="6dp"
+        android:src="@drawable/ic_close"
+        android:tint="#6B7280"
+        android:contentDescription="Close group" />
+
+</LinearLayout>
