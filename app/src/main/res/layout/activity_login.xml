@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="32dp">
+
+    <!-- Logo -->
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_layers"
+        android:tint="@color/tab_active" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/app_name"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="Sign in to sync your data"
+        android:textColor="#6B7280"
+        android:textSize="14sp" />
+
+    <!-- Google Sign In -->
+    <Button
+        android:id="@+id/btn_google_signin"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:backgroundTint="#4285F4"
+        android:drawableStart="@drawable/ic_google"
+        android:drawablePadding="12dp"
+        android:text="Sign in with Google"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:fontFamily="sans-serif-medium"
+        android:textAllCaps="false"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Divider -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#2A2A3E"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Email -->
+    <EditText
+        android:id="@+id/input_email"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@drawable/url_bar_bg"
+        android:hint="Email"
+        android:textColorHint="@color/url_text_hint"
+        android:textColor="@color/url_text"
+        android:textSize="15sp"
+        android:inputType="textEmailAddress"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:fontFamily="sans-serif" />
+
+    <!-- Display Name (sign up only) -->
+    <EditText
+        android:id="@+id/input_name"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@drawable/url_bar_bg"
+        android:hint="Display name"
+        android:textColorHint="@color/url_text_hint"
+        android:textColor="@color/url_text"
+        android:textSize="15sp"
+        android:inputType="textPersonName"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone" />
+
+    <!-- Password -->
+    <EditText
+        android:id="@+id/input_password"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@drawable/url_bar_bg"
+        android:hint="Password"
+        android:textColorHint="@color/url_text_hint"
+        android:textColor="@color/url_text"
+        android:textSize="15sp"
+        android:inputType="textPassword"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="sans-serif" />
+
+    <!-- Error text -->
+    <TextView
+        android:id="@+id/text_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/ssl_insecure"
+        android:textSize="13sp"
+        android:visibility="gone" />
+
+    <!-- Sign In / Sign Up button -->
+    <Button
+        android:id="@+id/btn_auth"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:backgroundTint="@color/tab_active"
+        android:text="Sign In"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"
+        android:textAllCaps="false" />
+
+    <!-- Toggle -->
+    <TextView
+        android:id="@+id/btn_toggle_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="8dp"
+        android:text="Don't have an account? Sign up"
+        android:textColor="@color/icon_tint"
+        android:textSize="14sp" />
+
+    <!-- Skip -->
+    <TextView
+        android:id="@+id/btn_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:text="Skip — browse as guest"
+        android:textColor="#4B5563"
+        android:textSize="13sp" />
+
+</LinearLayout>
